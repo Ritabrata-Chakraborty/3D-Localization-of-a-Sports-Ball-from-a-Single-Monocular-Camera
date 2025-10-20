@@ -51,3 +51,14 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+
+# RF-DETR
+RF-DETR/Hockey-2/
+RF-DETR/output/
+
+# YOLO
+YOLO/Football/
+YOLO/output/
+
+#PnLCalib
+PnLCalib/
