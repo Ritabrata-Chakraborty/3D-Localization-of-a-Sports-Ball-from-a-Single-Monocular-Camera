@@ -1,0 +1,23 @@
+# RF-DETR Training and Inference Dependencies
+
+# Core packages
+rfdetr>=1.2.1
+supervision>=0.26.1
+roboflow
+
+# Inference
+inference-gpu>=0.51.7
+
+# Image processing
+Pillow>=9.0.0
+
+# Utilities
+tqdm>=4.65.0
+
+# Character encoding (fixes RequestsDependencyWarning)
+charset-normalizer>=3.0.0
+chardet>=5.0.0
+
+# Deep learning (if not already installed)
+torch>=2.0.0
+torchvision>=0.15.0
