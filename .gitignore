@@ -60,5 +60,13 @@ RF-DETR/output/
 YOLO/Football/
 YOLO/output/
 
-#PnLCalib
-PnLCalib/
+# PnLCalib (exclude large model files and unnecessary data)
+PnLCalib/MV_kp
+PnLCalib/MV_lines
+PnLCalib/SV_kp
+PnLCalib/SV_lines
+PnLCalib/SV_FT_TSWC_lines
+PnLCalib/SV_FT_WC14_kp
+PnLCalib/SV_FT_WC14_lines
+PnLCalib/inference/
+PnLCalib/sn_calibration/
