@@ -3,16 +3,13 @@
 ## Table of Contents
 - [Overview](#overview)
 - [Visual Examples](#visual-examples)
-- [System Requirements](#system-requirements)
 - [Installation](#installation)
 - [Pipeline Architecture](#pipeline-architecture)
 - [Stage-by-Stage Guide](#stage-by-stage-guide)
-- [Configuration](#configuration)
 - [Output Files](#output-files)
-- [Troubleshooting](#troubleshooting)
 - [Future Work](#future-work)
-- [Technical Details](#technical-details)
-- [References](#references)
+- [License & Contact](#license--contact)
+
 
 ---
 
