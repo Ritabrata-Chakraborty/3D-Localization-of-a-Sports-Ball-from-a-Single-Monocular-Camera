@@ -61,7 +61,11 @@ The pipeline generates a fully annotated video (`final_video.mp4`, 7.1 MB) with:
 
 **Video Output**:
 
-📹 **[Download and view the annotated video](results/V2_1/stage5_finalization/final_video.mp4)** (7.1 MB, 30fps)
+<a href="results/V2_1/stage5_finalization/final_video.mp4">
+  <img src="results/V2_1/stage5_finalization/trajectories_3d.png" alt="Click to play annotated video" width="100%">
+</a>
+
+**📹 [Download and view the annotated video](results/V2_1/stage5_finalization/final_video.mp4)** (7.1 MB, 30fps)
 
 The video includes:
 - Ball center tracking with bounding boxes
@@ -437,7 +441,11 @@ The pipeline consists of 5 sequential stages:
 
 **Video Output**: 
 
-📹 **[Download and view the annotated video](results/V2_1/stage5_finalization/final_video.mp4)** (7.1 MB, 30fps)
+<a href="results/V2_1/stage5_finalization/final_video.mp4">
+  <img src="results/V2_1/stage5_finalization/trajectories_3d.png" alt="Click to play annotated video" width="100%">
+</a>
+
+**📹 [Download and view the annotated video](results/V2_1/stage5_finalization/final_video.mp4)** (7.1 MB, 30fps)
 
 *Annotated video showing ball tracking with overlays including bounding boxes, field line projections, camera parameters, and 3D positions.*
 
