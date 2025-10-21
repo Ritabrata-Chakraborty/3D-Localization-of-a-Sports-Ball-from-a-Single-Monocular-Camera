@@ -1,5 +1,9 @@
 # Ball Tracking and 3D Localization Pipeline
 
+**Part 1 of Project:** *Sports Ball 3D Trajectory Reconstruction and Classification from Broadcast Video*
+
+👉 For **Part 2: Trajectory-based Shot Classification**, see the accompanying repository: [Hockey Shot Classification Pipeline](https://github.com/Ritabrata-Chakraborty/Hockey-Shot-Classification-Pipeline)
+
 ## Table of Contents
 - [Overview](#overview)
 - [Visual Examples](#visual-examples)
