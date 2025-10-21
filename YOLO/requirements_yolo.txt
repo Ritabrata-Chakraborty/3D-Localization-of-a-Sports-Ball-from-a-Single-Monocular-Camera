@@ -1,0 +1,38 @@
+# YOLO Training and Inference Dependencies
+
+# Core YOLO package
+ultralytics>=8.0.0
+
+# Dataset management
+supervision>=0.26.1
+roboflow
+
+# Image processing
+Pillow>=9.0.0
+opencv-python>=4.7.0
+
+# Utilities
+tqdm>=4.65.0
+PyYAML>=6.0.0
+
+# Character encoding (fixes RequestsDependencyWarning)
+charset-normalizer>=3.0.0
+chardet>=5.0.0
+
+# Deep learning (if not already installed)
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Additional ML libraries
+numpy>=1.21.0
+matplotlib>=3.5.0
+pandas>=1.3.0
+seaborn>=0.11.0
+
+# For model export (optional)
+onnx>=1.12.0
+onnxruntime>=1.12.0
+
+# For advanced features (optional)
+tensorboard>=2.9.0
+wandb>=0.13.0

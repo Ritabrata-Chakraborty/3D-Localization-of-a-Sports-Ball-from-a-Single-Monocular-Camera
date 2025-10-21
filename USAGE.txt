@@ -1,0 +1,182 @@
+Ball Tracking Pipeline - 4-Stage Modular Structure
+
+================================================================================
+DIRECTORY STRUCTURE
+================================================================================
+
+ball_tracker/                    Ball tracking package
+├── __init__.py                 Package initialization
+├── config.py                   Configuration management
+├── ekf_2d.py                   2D Kalman filter (outlier detection)
+├── ekf_3d.py                   3D Kalman filter (world tracking)
+├── hypothesis_generator.py     3D position estimation
+├── pipeline.py                 Main processing pipeline
+├── corrector.py                Manual correction interface
+├── visualizer.py               3D visualization
+└── pnlcalib_utils.py          PnLCalib helper functions
+
+video_tools/                     Video utilities package
+├── __init__.py                 Package initialization
+├── download.py                 Download videos from YouTube
+├── extract.py                  Extract frames from videos
+└── video_links.txt             Sample video links
+
+run_tracker.py                   Main tracking script
+video.sh                         Video tools wrapper script
+ball_tracking.sh                 Ball tracking wrapper script
+
+================================================================================
+4-STAGE BALL TRACKING PIPELINE
+================================================================================
+
+STAGE 1: PROCESS (Required)
+   - Camera calibration (PnLCalib)
+   - Ball detection (YOLO)
+   - 2D EKF validation (outlier detection)
+   - RAW 3D hypothesis generation
+   - Stores: raw_3d_x, raw_3d_y, raw_3d_z (ALWAYS AVAILABLE)
+
+STAGE 2: CORRECT (Optional)
+   - Interactive manual correction of detections
+   - Fix false positives/negatives
+
+STAGE 3: POST-PROCESS (Optional)
+   - 3D EKF smoothing of raw positions
+   - Hypothesis refinement
+   - Stores: smooth_3d_x, smooth_3d_y, smooth_3d_z
+
+STAGE 4: VIEW (Required)
+   - 3D visualization (matplotlib + Open3D)
+   - Uses smoothed data if available, otherwise raw data
+
+================================================================================
+USAGE EXAMPLES
+================================================================================
+
+# Full pipeline (all stages):
+python run_tracker.py --mode process --frames frames/ --output results/
+python run_tracker.py --mode correct --results results/ --frames frames/
+python run_tracker.py --mode postprocess --results results/
+python run_tracker.py --mode view --results results/ --animate
+
+# Minimal pipeline (skip correction and post-processing):
+python run_tracker.py --mode process --frames frames/ --output results/
+python run_tracker.py --mode view --results results/
+
+# Using wrapper script:
+./ball_tracking.sh process
+./ball_tracking.sh correct
+./ball_tracking.sh postprocess
+./ball_tracking.sh view
+
+OPTIONS:
+--device cuda:0    Use GPU (default)
+--device cpu       Use CPU
+--animate          Animated 3D visualization (view mode)
+
+================================================================================
+OUTPUT STRUCTURE
+================================================================================
+
+results/
+├── frames/                      Annotated frames with bbox + field lines
+├── csv/
+│   └── tracking_results.csv     Complete tracking data
+└── trajectory_3d.png            Static 3D plot
+
+CSV COLUMNS (KEY):
+- raw_3d_x, raw_3d_y, raw_3d_z          Raw 3D positions (ALWAYS available)
+- raw_3d_method, raw_3d_likelihood      Raw 3D metadata
+- smooth_3d_x, smooth_3d_y, smooth_3d_z Smoothed 3D (if post-processed)
+- smooth_3d_vx, smooth_3d_vy, smooth_3d_vz Velocities (if post-processed)
+- smooth_3d_applied                     Flag indicating smoothing was applied
+
+================================================================================
+KEY PRINCIPLE
+================================================================================
+
+RAW 3D positions are ALWAYS stored in STAGE 1 (process), even if you never
+run STAGE 3 (post-process). This ensures you always have unsmoothed 3D data
+available for analysis or visualization.
+
+Post-processing is OPTIONAL and adds smoothed positions alongside raw ones.
+
+================================================================================
+VIDEO TOOLS USAGE
+================================================================================
+
+DOWNLOAD VIDEOS:
+./video.sh download <url_or_file> [output_dir]
+
+Examples:
+  # Download single video
+  ./video.sh download "https://youtube.com/watch?v=..." Videos
+
+  # Download from file
+  ./video.sh download video_tools/video_links.txt Videos
+
+EXTRACT FRAMES:
+./video.sh extract <video_path> [options]
+
+Examples:
+  # Extract all frames
+  ./video.sh extract Videos/video.mp4
+
+  # Extract every 30th frame
+  ./video.sh extract Videos/video.mp4 --every_n_frames 30
+
+  # Extract time range (10s to 60s)
+  ./video.sh extract Videos/video.mp4 --start_sec 10 --end_sec 60
+
+  # Extract to custom directory
+  ./video.sh extract Videos/video.mp4 --out_dir my_frames
+
+  # Extract limited frames
+  ./video.sh extract Videos/video.mp4 --max_frames 100
+
+OPTIONS:
+  --out_dir DIR           Output directory (default: frames)
+  --every_n_frames N      Extract every N-th frame (default: 1)
+  --start_sec SECONDS     Start time in seconds (default: 0)
+  --end_sec SECONDS       End time in seconds (default: end)
+  --max_frames N          Maximum frames to extract (default: all)
+
+================================================================================
+COMPLETE WORKFLOW
+================================================================================
+
+1. Download video:
+   ./video.sh download "https://youtube.com/..." Videos
+
+2. Extract frames:
+   ./video.sh extract Videos/video.mp4 --every_n_frames 30 --out_dir frames
+
+3. Track ball:
+   python run_tracker.py --mode process --frames frames/video --output results
+
+4. Correct errors (optional):
+   python run_tracker.py --mode correct --results results --frames frames/video
+
+5. View trajectory:
+   python run_tracker.py --mode view --results results --animate
+
+================================================================================
+REQUIREMENTS
+================================================================================
+
+Ball Tracking:
+- opencv-python
+- numpy, pandas, scipy
+- matplotlib
+- torch, torchvision
+- ultralytics (YOLO)
+- open3d (optional, for 3D viewer)
+
+Video Tools:
+- yt-dlp (for download)
+- opencv-python (for extract)
+- ffmpeg (for extract)
+
+Install:
+pip install opencv-python numpy pandas scipy matplotlib torch ultralytics open3d yt-dlp
+brew install ffmpeg  # macOS
