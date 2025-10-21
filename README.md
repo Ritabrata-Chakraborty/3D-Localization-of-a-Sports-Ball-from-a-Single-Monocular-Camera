@@ -30,7 +30,7 @@ This is a complete computer vision pipeline for detecting, tracking, and localiz
 
 ### 3D Trajectory Visualization
 
-![3D Trajectory Plot](results/V2_1/stage5_finalization/trajectories_3d.png)
+<img width="2686" height="2780" alt="trajectories_3d" src="https://github.com/user-attachments/assets/c4d81358-0988-47c7-8960-278c14348a9b" />
 
 ---
 
