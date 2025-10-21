@@ -1,8 +1,5 @@
 # Ball Tracking and 3D Localization Pipeline - Complete Documentation
 
-![final_video](https://github.com/user-attachments/assets/c7d0168a-74ac-4f67-b1e4-506fd124938d)
-
-
 ## Table of Contents
 - [Overview](#overview)
 - [Visual Examples](#visual-examples)
@@ -21,13 +18,17 @@
 
 ## Overview
 
-This is a complete computer vision pipeline for detecting, tracking, and localizing a ball in 3D from monocular video footage. The system uses state-of-the-art object detection (YOLO), camera calibration from field markings (PnLCalib), and physics-based trajectory fitting to achieve accurate 3D ball localization.
+This is a complete computer vision pipeline for detecting, tracking, and localizing a ball in 3D from monocular video footage.
 
 ---
 
 ## Visual Examples
 
-### Final Output: 3D Trajectory Visualization
+### Broadcast Video
+
+![Uploading final_video.gif…]()
+
+### 3D Trajectory Visualization
 
 ![3D Trajectory Plot](results/V2_1/stage5_finalization/trajectories_3d.png)
 
