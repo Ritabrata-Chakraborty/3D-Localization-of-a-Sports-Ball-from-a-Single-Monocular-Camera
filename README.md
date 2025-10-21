@@ -61,14 +61,14 @@ The pipeline generates a fully annotated video (`final_video.mp4`, 7.1 MB) with:
 
 **Video Output**:
 
-https://github.com/mguti97/PnLCalib/assets/raw/main/results/V2_1/stage5_finalization/final_video.mp4
+📹 **[Download and view the annotated video](results/V2_1/stage5_finalization/final_video.mp4)** (7.1 MB, 30fps)
 
-<video width="100%" controls>
-  <source src="results/V2_1/stage5_finalization/final_video.mp4" type="video/mp4">
-  Your browser does not support the video tag. Download the video from: results/V2_1/stage5_finalization/final_video.mp4
-</video>
-
-**Access**: `results/V2_1/stage5_finalization/final_video.mp4`
+The video includes:
+- Ball center tracking with bounding boxes
+- Real-time 3D position coordinates
+- Camera pose parameters (position & rotation)
+- Field line projections and air/ground classification
+- Trajectory fitting visualization
 
 ### Additional Visualizations
 
@@ -437,12 +437,9 @@ The pipeline consists of 5 sequential stages:
 
 **Video Output**: 
 
-<video width="100%" controls>
-  <source src="results/V2_1/stage5_finalization/final_video.mp4" type="video/mp4">
-  Your browser does not support the video tag. Download the video from: results/V2_1/stage5_finalization/final_video.mp4
-</video>
+📹 **[Download and view the annotated video](results/V2_1/stage5_finalization/final_video.mp4)** (7.1 MB, 30fps)
 
-*Annotated video (30fps, 7.1 MB) showing ball tracking with overlays including bounding boxes, field line projections, camera parameters, and 3D positions.*
+*Annotated video showing ball tracking with overlays including bounding boxes, field line projections, camera parameters, and 3D positions.*
 
 **File Sizes**:
 - final_video.mp4: 7.1 MB
