@@ -1,4 +1,4 @@
-# Ball Tracking and 3D Localization Pipeline - Complete Documentation
+# Ball Tracking and 3D Localization Pipeline
 
 ## Table of Contents
 - [Overview](#overview)
