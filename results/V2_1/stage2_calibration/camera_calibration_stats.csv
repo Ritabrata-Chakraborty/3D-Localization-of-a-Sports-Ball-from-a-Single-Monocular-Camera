@@ -1,0 +1,13 @@
+metric,value
+recon_error_mean,6.791338091035899
+recon_error_std,1.7699233160001815
+recon_error_median,6.574359178850512
+confidence_min,0.1
+confidence_max,1.0
+high_conf_frames,25.0
+cam_x_constant,1.9152161811169433
+cam_y_constant,84.6816826638184
+cam_z_constant,-19.070093815386453
+cam_x_std,6.695238306369432e-16
+cam_y_std,1.4283175053588122e-14
+cam_z_std,3.5707937633970306e-15

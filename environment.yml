@@ -1,0 +1,20 @@
+name: ball_tracking
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - opencv
+  - matplotlib
+  - numpy
+  - pandas
+  - scipy
+  - ffmpeg
+  - pyyaml
+  - pip:
+      - torch>=2.0.0
+      - torchvision>=0.15.0
+      - ultralytics>=8.0.0
+      - yt-dlp
+      - pillow

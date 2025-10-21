@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# YOLO models (large files)
+*.pt
+!yolo11n.pt
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+
+# Cache
+.cache/
+*.cache
+
+# PnLCalib
+PnLCalib/
+
+# Downloads - videos only
+downloads/videos/
+
+# RF-DETR (except scripts)
+RF-DETR/
+!RF-DETR/*.sh
+!RF-DETR/*.py
+
+# YOLO (except scripts)
+YOLO/
+!YOLO/*.sh
+!YOLO/*.py
