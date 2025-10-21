@@ -26,7 +26,7 @@ This is a complete computer vision pipeline for detecting, tracking, and localiz
 
 ### Broadcast Video
 
-![Uploading final_video.gif…]()
+![final_video](https://github.com/user-attachments/assets/a165b049-d884-420a-bd11-021468c55eab)
 
 ### 3D Trajectory Visualization
 
