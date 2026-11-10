@@ -13,6 +13,8 @@
   // ground truth has a few outlier frames, and SNv3D-size's per-frame depth jumps by metres.
   var MAX_STEP_M = 3;
   var BALL_RADIUS_M = 0.11;   // a size-5 ball is 22 cm across
+  // Bump with each data update so browsers do not show cached clips or names.
+  var DEMO_VERSION = '2';
 
   // Split a path at missing frames and implausible jumps; each piece has at least two points.
   function pieces(path) {
@@ -38,7 +40,7 @@
       if (kind === 'json') return JSON.parse(new TextDecoder().decode(plain));
       return URL.createObjectURL(new Blob([plain], { type: 'video/mp4' }));
     }
-    var res = await fetch('assets/demo/' + name);
+    var res = await fetch('assets/demo/' + name + '?v=' + DEMO_VERSION);
     if (kind === 'json') return res.json();
     return URL.createObjectURL(await res.blob());
   }
