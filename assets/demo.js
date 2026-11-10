@@ -4,7 +4,7 @@
 (function () {
   'use strict';
   // One solid colour per method, the same in the video overlay and the 3D view.
-  var COLORS = { 'Ground truth': '#ffffff', 'ArcPrior-full': '#E69F00', 'LM-fitg': '#009E73',
+  var COLORS = { 'Ground truth': '#ffffff', 'Ours (network + physics fit)': '#E69F00', 'Ours (physics only)': '#009E73',
     'Ball3D': '#56B4E9', 'SNv3D-size': '#CC79A7' };
   // The data's world frame (x, y, z up) is left-handed, so the 3D view mirrors y to show the pitch
   // as the camera sees it.
@@ -221,7 +221,7 @@
       methodBox.innerHTML = ''; legend.innerHTML = '';
       var names = ['Ground truth'].concat(Object.keys(clip.methods[selScenario.value] || {}));
       names.forEach(function (n) {
-        var prev = methodChecks[n] ? methodChecks[n].checked : (n === 'Ground truth' || n === 'ArcPrior-full' || n === 'Ball3D');
+        var prev = methodChecks[n] ? methodChecks[n].checked : (n === 'Ground truth' || n === 'Ours (network + physics fit)' || n === 'Ball3D');
         var l = el('label'), c = el('input', { type: 'checkbox' });
         c.checked = prev; c.addEventListener('change', refresh);
         methodChecks[n] = c;
