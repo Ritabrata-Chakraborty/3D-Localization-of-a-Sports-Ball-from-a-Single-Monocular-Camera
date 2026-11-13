@@ -4,17 +4,16 @@
 (function () {
   'use strict';
   // One solid colour per method, the same in the video overlay and the 3D view.
-  var COLORS = { 'Ground truth': '#ffffff', 'Ours (network + physics fit)': '#E69F00', 'Ours (physics only)': '#009E73',
-    'Ball3D': '#56B4E9', 'SNv3D-size': '#CC79A7' };
+  var COLORS = { 'Ground truth': '#ffffff', 'ArcPrior Base': '#E69F00', 'ArcPrior ft': '#D55E00',
+    'Grad et al.': '#56B4E9', 'LM-fitg': '#009E73' };
   // The data's world frame (x, y, z up) is left-handed, so the 3D view mirrors y to show the pitch
   // as the camera sees it.
   var MIRROR_Y = -1;
   // Consecutive points further apart than this (75 m/s at 25 fps) are drawn as a gap: the benchmark's
-  // ground truth has a few outlier frames, and SNv3D-size's per-frame depth jumps by metres.
+  // ground truth has a few outlier frames.
   var MAX_STEP_M = 3;
   var BALL_RADIUS_M = 0.11;   // a size-5 ball is 22 cm across
-  // Bump with each data update so browsers do not show cached clips or names.
-  var DEMO_VERSION = '2';
+  var DEMO_VERSION = '3';   // bump when the clips change, so browsers refetch them
 
   // Split a path at missing frames and implausible jumps; each piece has at least two points.
   function pieces(path) {
@@ -167,22 +166,40 @@
   }
 
   // ---------------------------------------------------------------- app
+  var SETTINGS = [['gt', 'GT inputs: dataset track and camera'], ['real', 'Real: published YOLO + PnLCalib'],
+    ['heads', 'Real + heads ft (det,cal)']];
+  var PRIORS = [['frozen', 'Prior: chosen on validation'], ['none', 'Prior: none'], ['gauss', 'Prior: Gaussian'],
+    ['subspace1', 'Prior: weak-direction, weight 1'], ['subspace3', 'Prior: weak-direction, weight 3']];
+  // Display name -> method key in the clip file ('base' / 'ft' are followed by the prior).
+  var METHODS = [['LM-fitg', 'lm_fitg'], ['Grad et al.', 'grad'], ['ArcPrior Base', 'base'], ['ArcPrior ft', 'ft']];
+
+  function ordinal(q) { return q + (q === 100 ? 'th' : ['th', 'st', 'nd', 'rd'][q % 10] || 'th'); }
+
   async function start(root) {
     root.innerHTML = '';
     var manifest = await getAsset('manifest.json', 'json');
     var flights = {};
     manifest.forEach(function (m) { (flights[m.flight] = flights[m.flight] || []).push(m); });
     var controls = el('div', { class: 'demo-controls' });
-    var selFlight = el('select', { 'aria-label': 'Flight' });
-    Object.keys(flights).sort(function (x, y) { return flights[x][0].apex - flights[y][0].apex; }).forEach(function (f, i) {
+    function select(label, options) {
+      var s = el('select', { 'aria-label': label });
+      options.forEach(function (o) { s.appendChild(el('option', { value: o[0] }, o[1])); });
+      return s;
+    }
+    var selFlight = select('Flight', Object.keys(flights).sort(function (x, y) {
+      return flights[x][0].percentile - flights[y][0].percentile;
+    }).map(function (f) {
       var m = flights[f][0];
-      selFlight.appendChild(el('option', { value: f }, 'Flight ' + (i + 1) + ' (half ' + m.half + ', apex ' + m.apex + ' m)'));
-    });
+      return [f, ordinal(m.percentile) + ' percentile (half ' + m.half + ', apex ' + m.apex + ' m)'];
+    }));
     var selView = el('select', { 'aria-label': 'Camera' });
-    var selScenario = el('select', { 'aria-label': 'Scenario' });
-    [['S1', 'S1: benchmark inputs'], ['S2', 'S2: video, off the shelf'], ['S3-sup', 'S3-sup: fine-tuned heads']].forEach(function (s) {
-      selScenario.appendChild(el('option', { value: s[0] }, s[1]));
-    });
+    var selSetting = select('Inputs', SETTINGS);
+    var levels = [['true', 'correct'], ['off', 'wrong (0.5 m off)'], ['none', 'not given']];
+    var selStart = select('Start contact height', levels.map(function (l) { return [l[0], 'Start height: ' + l[1]]; }));
+    var selEnd = select('End contact height', levels.map(function (l) { return [l[0], 'End height: ' + l[1]]; }));
+    var selPrior = select('ArcPrior prior', PRIORS);
+    var selShare = select('Seen part of the flight', [['1', 'Whole flight seen (end contact known)']].concat(
+      [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3].map(function (q) { return [String(q), Math.round(q * 100) + ' % seen, rest forecast']; })));
     var toggles = {};
     function toggle(key, label, on) {
       var l = el('label'), c = el('input', { type: 'checkbox' });
@@ -190,8 +207,10 @@
       toggles[key] = c; return l;
     }
     var playBtn = el('button', { type: 'button' }, 'Pause');
-    [selFlight, selView, selScenario, toggle('yolo', 'YOLO boxes', true), toggle('pnl', 'PnLCalib lines', true),
-     toggle('air', '3D paths', true), toggle('ground', 'Ground tracks', true), playBtn].forEach(function (x) { controls.appendChild(x); });
+    [selFlight, selView, selSetting, selShare, selStart, selEnd, selPrior].forEach(function (x) { controls.appendChild(x); });
+    var toggleBox = el('div', { class: 'demo-controls' });
+    [toggle('yolo', 'YOLO boxes', true), toggle('pnl', 'Pitch lines', true), toggle('track', 'Tracked ball', true),
+     toggle('air', '3D paths', true), toggle('ground', 'Ground tracks', false), playBtn].forEach(function (x) { toggleBox.appendChild(x); });
     var methodBox = el('div', { class: 'demo-controls' });
     var grid = el('div', { class: 'demo-grid' });
     var left = el('div'), stage = el('div', { class: 'stage' });
@@ -200,64 +219,123 @@
     stage.appendChild(video); stage.appendChild(canvas);
     var scrub = el('input', { type: 'range', min: 0, max: 100, value: 0, class: 'scrub', 'aria-label': 'Frame' });
     var status = el('p', { class: 'status' });
-    left.appendChild(stage); left.appendChild(scrub); left.appendChild(status);
+    var info = el('p', { class: 'status' });
+    left.appendChild(stage); left.appendChild(scrub); left.appendChild(status); left.appendChild(info);
     var right = el('div', { class: 'view3d' });
     var hint = el('p', { class: 'status' }, '3D view: starts at the video camera and follows it; drag to rotate, scroll to zoom. Changing the flight or camera resets it.');
     grid.appendChild(left); grid.appendChild(right); grid.appendChild(hint);
     var legend = el('div', { class: 'legend' });
-    root.appendChild(controls); root.appendChild(methodBox); root.appendChild(grid); root.appendChild(legend);
+    root.appendChild(controls); root.appendChild(toggleBox); root.appendChild(methodBox); root.appendChild(grid); root.appendChild(legend);
     var view = make3d(right);
     var ctx = canvas.getContext('2d');
     var clip = null, methodChecks = {}, cache = {};
+
+    function pairIndex() { return clip.levels.indexOf(selStart.value) * 3 + clip.levels.indexOf(selEnd.value); }
+    function isPartial() { return selShare.value !== '1'; }
+    function partIndex() { return clip.shares.indexOf(Number(selShare.value)) * 3 + clip.levels.indexOf(selStart.value); }
+    // Frames seen at the current share (the whole flight when it is not cut).
+    function seenFrames() {
+      if (!isPartial()) return clip.flight_n;
+      var e = entry('base');
+      return e && e.cut ? e.cut : Math.round(Number(selShare.value) * clip.flight_n);
+    }
+
+    // The entry of one method for the current inputs, heights and prior (null if not run or not answered).
+    function entry(key) {
+      var setting = selSetting.value, ms = clip.methods[setting] || {};
+      if (key === 'base' || key === 'ft') {
+        var prior = selPrior.value === 'frozen' ? clip.frozen[setting + ':' + key] : selPrior.value;
+        if (!prior) return null;
+        key = key + ':' + prior;
+      }
+      if (isPartial()) {
+        var part = (clip.partial[setting] || {})[key];
+        return part ? part[partIndex()] : null;
+      }
+      var list = ms[key];
+      return list ? list[pairIndex()] : null;
+    }
 
     function shownPaths() {
       var out = [];
       if (!clip) return out;
       if (methodChecks['Ground truth'] && methodChecks['Ground truth'].checked) out.push({ name: 'Ground truth', path: clip.gt });
-      var ms = clip.methods[selScenario.value] || {};
-      Object.keys(ms).forEach(function (n) { if (methodChecks[n] && methodChecks[n].checked) out.push({ name: n, path: ms[n].path, rmse: ms[n].rmse }); });
+      METHODS.forEach(function (m) {
+        var e = entry(m[1]);
+        if (e && methodChecks[m[0]] && methodChecks[m[0]].checked) out.push({ name: m[0], path: e.path, rmse: e.rmse });
+      });
       return out;
     }
 
     function buildMethods() {
       methodBox.innerHTML = ''; legend.innerHTML = '';
-      var names = ['Ground truth'].concat(Object.keys(clip.methods[selScenario.value] || {}));
+      var names = ['Ground truth'].concat(METHODS.map(function (m) { return m[0]; }));
       names.forEach(function (n) {
-        var prev = methodChecks[n] ? methodChecks[n].checked : (n === 'Ground truth' || n === 'Ours (network + physics fit)' || n === 'Ball3D');
+        var key = (METHODS.filter(function (m) { return m[0] === n; })[0] || [])[1];
+        var e = key ? entry(key) : null;
+        if (key === 'ft' && selSetting.value === 'gt') return;
+        if (key === 'grad' && isPartial()) return;   // Grad et al. fit only the frames seen
+        var prev = methodChecks[n] ? methodChecks[n].checked : true;
         var l = el('label'), c = el('input', { type: 'checkbox' });
         c.checked = prev; c.addEventListener('change', refresh);
         methodChecks[n] = c;
-        var r = (clip.methods[selScenario.value] || {})[n];
         l.appendChild(c);
-        l.appendChild(document.createTextNode(n + (r && r.rmse != null ? ' (' + r.rmse.toFixed(2) + ' m)' : '')));
+        var text = n;
+        if (key && isPartial()) text += e && e.coverage > 0 ? ' (RMSE ' + e.rmse.toFixed(2) + ' m; forecast ' + e.rmse_unseen.toFixed(2) + ' m)' : ' (no answer)';
+        else if (key) text += e && e.coverage > 0 ? ' (RMSE ' + e.rmse.toFixed(2) + ' m)' : ' (no answer)';
+        l.appendChild(document.createTextNode(text));
         methodBox.appendChild(l);
         var s = el('span'), sw = el('i', { class: 'swatch' });
         sw.style.background = COLORS[n]; sw.style.outline = '1px solid #8a8f96'; s.appendChild(sw); s.appendChild(document.createTextNode(n));
         legend.appendChild(s);
       });
+      var inp = clip.inputs[selSetting.value], k = isPartial() ? clip.levels.indexOf(selStart.value) * 3 : pairIndex();
+      function h(end) {
+        var v = inp.heights[end][k];
+        return v == null ? 'not given' : v.toFixed(2) + ' m given';
+      }
+      selEnd.disabled = isPartial();
+      var endText = isPartial() ? 'not used, the end is not seen' : h('end');
+      var seenText = isPartial() ? ' Seen: the first ' + seenFrames() + ' of ' + clip.flight_n + ' frames; the rest is forecast (the tracked ball is shown on seen frames only).' : '';
+      info.textContent = 'Contact heights: start ' + h('start') + ' (true ' + clip.z_contact[0].toFixed(2) + ' m), end ' + endText +
+        ' (true ' + clip.z_contact[1].toFixed(2) + ' m). RMSE over the whole flight, capped at 10 m; unanswered frames count as 10 m.' + seenText;
     }
 
     function frameIndex() { return Math.min(clip.count - 1, Math.max(0, Math.floor(video.currentTime * clip.fps + 1e-3))); }
 
+    function polyline(pts) { ctx.beginPath(); pts.forEach(function (q, i) { if (i) ctx.lineTo(q[0], q[1]); else ctx.moveTo(q[0], q[1]); }); ctx.stroke(); }
+
     function drawOverlay() {
       if (!clip) return;
       var k = frameIndex(), frame = clip.start + k, fi = frame - clip.flight_start;
+      var inp = clip.inputs[selSetting.value], P = clip.camera[k];
       ctx.clearRect(0, 0, 960, 540);
       if (toggles.pnl.checked) {
-        var lines = clip.pnlcalib.static ? clip.pnlcalib.lines : (clip.pnlcalib.lines[k] || []);
         ctx.strokeStyle = 'rgba(0,229,255,0.85)'; ctx.lineWidth = 1.6;
-        lines.forEach(function (pl) { ctx.beginPath(); pl.forEach(function (q, i) { if (i) ctx.lineTo(q[0], q[1]); else ctx.moveTo(q[0], q[1]); }); ctx.stroke(); });
+        if (inp.lines) {
+          (inp.lines.static ? inp.lines.lines : (inp.lines.lines[k] || [])).forEach(polyline);
+        } else {
+          // GT inputs: the dataset camera's pitch lines.
+          pitchLines(clip.pitch).forEach(function (pl) {
+            var pts = pl.map(function (q) { return project(P, q[0], q[1], 0); });
+            if (pts.every(function (q) { return q; })) polyline(pts);
+          });
+        }
       }
-      if (toggles.yolo.checked) {
-        (clip.yolo[k] || []).forEach(function (b, i) {
+      if (toggles.yolo.checked && inp.boxes) {
+        (inp.boxes[k] || []).forEach(function (b, i) {
           ctx.strokeStyle = i === 0 ? '#ff7f00' : 'rgba(255,255,255,0.8)'; ctx.lineWidth = i === 0 ? 2 : 1;
           ctx.strokeRect(b[0] - 4, b[1] - 4, b[2] - b[0] + 8, b[3] - b[1] + 8);
           ctx.fillStyle = ctx.strokeStyle; ctx.font = '12px Inter, sans-serif';
           ctx.fillText(b[4].toFixed(2), b[2] + 6, b[1] + 2);
         });
       }
+      if (toggles.track.checked && fi >= 0 && fi < seenFrames() && inp.track[fi]) {
+        var t = inp.track[fi];
+        ctx.strokeStyle = '#ffeb3b'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(t[0], t[1], 9, 0, 2 * Math.PI); ctx.stroke();
+      }
       if (toggles.air.checked || toggles.ground.checked) {
-        var P = clip.camera[k];
         shownPaths().forEach(function (s) {
           var col = COLORS[s.name] || '#fff';
           function stroke(z0) {
@@ -279,21 +357,36 @@
             var b = project(P, s.path[fi][0], s.path[fi][1], s.path[fi][2]);
             if (b) { ctx.fillStyle = col; ctx.beginPath(); ctx.arc(b[0], b[1], 4, 0, 2 * Math.PI); ctx.fill(); }
           }
+          // Partial flights: a white ring where the seen part ends and the forecast begins.
+          var last = s.path[seenFrames() - 1];
+          if (isPartial() && toggles.air.checked && last) {
+            var c = project(P, last[0], last[1], last[2]);
+            if (c) { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(c[0], c[1], 6, 0, 2 * Math.PI); ctx.stroke(); }
+          }
         });
       }
-      if (view && view.state.follow) followCamera(view, clip.camera[k], centroid(clip));
+      if (view && view.state.follow) followCamera(view, P, centroid(clip));
       if (view && view.marker) {
         var gt = clip.gt[Math.min(clip.flight_n - 1, Math.max(0, fi))];
         view.marker.visible = !!gt && fi >= 0 && fi < clip.flight_n;
         if (gt) view.marker.position.set(gt[0], gt[1], gt[2]);
       }
       scrub.value = Math.round(100 * k / Math.max(1, clip.count - 1));
-      status.textContent = clip.view + ', frame ' + frame + (fi >= 0 && fi < clip.flight_n ? ' (in flight)' : '');
+      status.textContent = clip.view + ', frame ' + frame + (fi >= 0 && fi < clip.flight_n ? (fi < seenFrames() ? ' (in flight, seen)' : ' (in flight, forecast)') : '');
     }
 
     function refresh() {
+      if (!clip) return;
       draw3d(view, clip, shownPaths(), { air: toggles.air.checked, ground: toggles.ground.checked });
       drawOverlay();
+    }
+
+    function rebuild() {
+      if (!clip) return;
+      // Clips without partial-flight data offer the whole flight only.
+      selShare.style.display = clip.shares ? '' : 'none';
+      if (!clip.shares) selShare.value = '1';
+      buildMethods(); refresh();
     }
 
     async function loadClip() {
@@ -303,7 +396,7 @@
       clip = cache[name].data;
       if (view) view.state.follow = true;
       video.src = cache[name].url; video.play().catch(function () {});
-      buildMethods(); refresh();
+      rebuild();
     }
 
     function fillViews() {
@@ -312,8 +405,8 @@
     }
     selFlight.addEventListener('change', function () { fillViews(); loadClip(); });
     selView.addEventListener('change', loadClip);
-    selScenario.addEventListener('change', function () { buildMethods(); refresh(); });
-    ['yolo', 'pnl'].forEach(function (k) { toggles[k].addEventListener('change', drawOverlay); });
+    [selSetting, selShare, selStart, selEnd, selPrior].forEach(function (s) { s.addEventListener('change', rebuild); });
+    ['yolo', 'pnl', 'track'].forEach(function (k) { toggles[k].addEventListener('change', drawOverlay); });
     ['air', 'ground'].forEach(function (k) { toggles[k].addEventListener('change', refresh); });
     playBtn.addEventListener('click', function () { if (video.paused) { video.play(); playBtn.textContent = 'Pause'; } else { video.pause(); playBtn.textContent = 'Play'; } });
     scrub.addEventListener('input', function () { video.pause(); playBtn.textContent = 'Play'; video.currentTime = (scrub.value / 100) * (clip.count - 1) / clip.fps; });

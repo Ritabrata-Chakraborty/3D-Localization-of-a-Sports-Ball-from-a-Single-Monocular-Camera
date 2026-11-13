@@ -1,55 +1,8 @@
 [
  {
-  "name": "0_broadcast",
-  "flight": 0,
-  "view": "broadcast",
-  "half": 1,
-  "apex": 3.8,
-  "frames": 75
- },
- {
-  "name": "0_camera01",
-  "flight": 0,
-  "view": "camera01",
-  "half": 1,
-  "apex": 3.8,
-  "frames": 75
- },
- {
-  "name": "0_camera02",
-  "flight": 0,
-  "view": "camera02",
-  "half": 1,
-  "apex": 3.8,
-  "frames": 75
- },
- {
-  "name": "0_camera03",
-  "flight": 0,
-  "view": "camera03",
-  "half": 1,
-  "apex": 3.8,
-  "frames": 75
- },
- {
-  "name": "0_camera04",
-  "flight": 0,
-  "view": "camera04",
-  "half": 1,
-  "apex": 3.8,
-  "frames": 75
- },
- {
-  "name": "0_camera05",
-  "flight": 0,
-  "view": "camera05",
-  "half": 1,
-  "apex": 3.8,
-  "frames": 75
- },
- {
   "name": "156_broadcast",
   "flight": 156,
+  "percentile": 10,
   "view": "broadcast",
   "half": 1,
   "apex": 4.9,
@@ -58,6 +11,7 @@
  {
   "name": "156_camera01",
   "flight": 156,
+  "percentile": 10,
   "view": "camera01",
   "half": 1,
   "apex": 4.9,
@@ -66,6 +20,7 @@
  {
   "name": "156_camera02",
   "flight": 156,
+  "percentile": 10,
   "view": "camera02",
   "half": 1,
   "apex": 4.9,
@@ -74,6 +29,7 @@
  {
   "name": "156_camera03",
   "flight": 156,
+  "percentile": 10,
   "view": "camera03",
   "half": 1,
   "apex": 4.9,
@@ -82,6 +38,7 @@
  {
   "name": "156_camera04",
   "flight": 156,
+  "percentile": 10,
   "view": "camera04",
   "half": 1,
   "apex": 4.9,
@@ -90,153 +47,496 @@
  {
   "name": "156_camera05",
   "flight": 156,
+  "percentile": 10,
   "view": "camera05",
   "half": 1,
   "apex": 4.9,
   "frames": 70
  },
  {
-  "name": "141_broadcast",
-  "flight": 141,
-  "view": "broadcast",
-  "half": 1,
-  "apex": 6.2,
-  "frames": 94
- },
- {
-  "name": "141_camera01",
-  "flight": 141,
-  "view": "camera01",
-  "half": 1,
-  "apex": 6.2,
-  "frames": 94
- },
- {
-  "name": "141_camera02",
-  "flight": 141,
-  "view": "camera02",
-  "half": 1,
-  "apex": 6.2,
-  "frames": 94
- },
- {
-  "name": "141_camera03",
-  "flight": 141,
-  "view": "camera03",
-  "half": 1,
-  "apex": 6.2,
-  "frames": 94
- },
- {
-  "name": "141_camera04",
-  "flight": 141,
-  "view": "camera04",
-  "half": 1,
-  "apex": 6.2,
-  "frames": 94
- },
- {
-  "name": "141_camera05",
-  "flight": 141,
-  "view": "camera05",
-  "half": 1,
-  "apex": 6.2,
-  "frames": 94
- },
- {
-  "name": "266_broadcast",
-  "flight": 266,
+  "name": "247_broadcast",
+  "flight": 247,
+  "percentile": 20,
   "view": "broadcast",
   "half": 2,
-  "apex": 8.1,
-  "frames": 101
+  "apex": 4.3,
+  "frames": 67
  },
  {
-  "name": "266_camera01",
-  "flight": 266,
+  "name": "247_camera01",
+  "flight": 247,
+  "percentile": 20,
   "view": "camera01",
   "half": 2,
-  "apex": 8.1,
-  "frames": 101
+  "apex": 4.3,
+  "frames": 67
  },
  {
-  "name": "266_camera02",
-  "flight": 266,
+  "name": "247_camera02",
+  "flight": 247,
+  "percentile": 20,
   "view": "camera02",
   "half": 2,
-  "apex": 8.1,
-  "frames": 101
+  "apex": 4.3,
+  "frames": 67
  },
  {
-  "name": "266_camera03",
-  "flight": 266,
+  "name": "247_camera03",
+  "flight": 247,
+  "percentile": 20,
   "view": "camera03",
   "half": 2,
-  "apex": 8.1,
-  "frames": 101
+  "apex": 4.3,
+  "frames": 67
  },
  {
-  "name": "266_camera04",
-  "flight": 266,
+  "name": "247_camera04",
+  "flight": 247,
+  "percentile": 20,
   "view": "camera04",
   "half": 2,
-  "apex": 8.1,
-  "frames": 101
+  "apex": 4.3,
+  "frames": 67
  },
  {
-  "name": "266_camera05",
-  "flight": 266,
+  "name": "247_camera05",
+  "flight": 247,
+  "percentile": 20,
   "view": "camera05",
   "half": 2,
-  "apex": 8.1,
-  "frames": 101
+  "apex": 4.3,
+  "frames": 67
  },
  {
-  "name": "52_broadcast",
-  "flight": 52,
+  "name": "361_broadcast",
+  "flight": 361,
+  "percentile": 30,
+  "view": "broadcast",
+  "half": 2,
+  "apex": 1.2,
+  "frames": 49
+ },
+ {
+  "name": "361_camera01",
+  "flight": 361,
+  "percentile": 30,
+  "view": "camera01",
+  "half": 2,
+  "apex": 1.2,
+  "frames": 49
+ },
+ {
+  "name": "361_camera02",
+  "flight": 361,
+  "percentile": 30,
+  "view": "camera02",
+  "half": 2,
+  "apex": 1.2,
+  "frames": 49
+ },
+ {
+  "name": "361_camera03",
+  "flight": 361,
+  "percentile": 30,
+  "view": "camera03",
+  "half": 2,
+  "apex": 1.2,
+  "frames": 49
+ },
+ {
+  "name": "361_camera04",
+  "flight": 361,
+  "percentile": 30,
+  "view": "camera04",
+  "half": 2,
+  "apex": 1.2,
+  "frames": 49
+ },
+ {
+  "name": "361_camera05",
+  "flight": 361,
+  "percentile": 30,
+  "view": "camera05",
+  "half": 2,
+  "apex": 1.2,
+  "frames": 49
+ },
+ {
+  "name": "0_broadcast",
+  "flight": 0,
+  "percentile": 40,
   "view": "broadcast",
   "half": 1,
-  "apex": 12.6,
-  "frames": 121
+  "apex": 3.8,
+  "frames": 75
  },
  {
-  "name": "52_camera01",
-  "flight": 52,
+  "name": "0_camera01",
+  "flight": 0,
+  "percentile": 40,
   "view": "camera01",
   "half": 1,
-  "apex": 12.6,
-  "frames": 121
+  "apex": 3.8,
+  "frames": 75
  },
  {
-  "name": "52_camera02",
-  "flight": 52,
+  "name": "0_camera02",
+  "flight": 0,
+  "percentile": 40,
   "view": "camera02",
   "half": 1,
-  "apex": 12.6,
-  "frames": 121
+  "apex": 3.8,
+  "frames": 75
  },
  {
-  "name": "52_camera03",
-  "flight": 52,
+  "name": "0_camera03",
+  "flight": 0,
+  "percentile": 40,
   "view": "camera03",
   "half": 1,
-  "apex": 12.6,
-  "frames": 121
+  "apex": 3.8,
+  "frames": 75
  },
  {
-  "name": "52_camera04",
-  "flight": 52,
+  "name": "0_camera04",
+  "flight": 0,
+  "percentile": 40,
   "view": "camera04",
   "half": 1,
-  "apex": 12.6,
-  "frames": 121
+  "apex": 3.8,
+  "frames": 75
  },
  {
-  "name": "52_camera05",
-  "flight": 52,
+  "name": "0_camera05",
+  "flight": 0,
+  "percentile": 40,
   "view": "camera05",
   "half": 1,
-  "apex": 12.6,
-  "frames": 121
+  "apex": 3.8,
+  "frames": 75
+ },
+ {
+  "name": "249_broadcast",
+  "flight": 249,
+  "percentile": 50,
+  "view": "broadcast",
+  "half": 2,
+  "apex": 4.2,
+  "frames": 64
+ },
+ {
+  "name": "249_camera01",
+  "flight": 249,
+  "percentile": 50,
+  "view": "camera01",
+  "half": 2,
+  "apex": 4.2,
+  "frames": 64
+ },
+ {
+  "name": "249_camera02",
+  "flight": 249,
+  "percentile": 50,
+  "view": "camera02",
+  "half": 2,
+  "apex": 4.2,
+  "frames": 64
+ },
+ {
+  "name": "249_camera03",
+  "flight": 249,
+  "percentile": 50,
+  "view": "camera03",
+  "half": 2,
+  "apex": 4.2,
+  "frames": 64
+ },
+ {
+  "name": "249_camera04",
+  "flight": 249,
+  "percentile": 50,
+  "view": "camera04",
+  "half": 2,
+  "apex": 4.2,
+  "frames": 64
+ },
+ {
+  "name": "249_camera05",
+  "flight": 249,
+  "percentile": 50,
+  "view": "camera05",
+  "half": 2,
+  "apex": 4.2,
+  "frames": 64
+ },
+ {
+  "name": "148_broadcast",
+  "flight": 148,
+  "percentile": 60,
+  "view": "broadcast",
+  "half": 1,
+  "apex": 3.5,
+  "frames": 63
+ },
+ {
+  "name": "148_camera01",
+  "flight": 148,
+  "percentile": 60,
+  "view": "camera01",
+  "half": 1,
+  "apex": 3.5,
+  "frames": 63
+ },
+ {
+  "name": "148_camera02",
+  "flight": 148,
+  "percentile": 60,
+  "view": "camera02",
+  "half": 1,
+  "apex": 3.5,
+  "frames": 63
+ },
+ {
+  "name": "148_camera03",
+  "flight": 148,
+  "percentile": 60,
+  "view": "camera03",
+  "half": 1,
+  "apex": 3.5,
+  "frames": 63
+ },
+ {
+  "name": "148_camera04",
+  "flight": 148,
+  "percentile": 60,
+  "view": "camera04",
+  "half": 1,
+  "apex": 3.5,
+  "frames": 63
+ },
+ {
+  "name": "148_camera05",
+  "flight": 148,
+  "percentile": 60,
+  "view": "camera05",
+  "half": 1,
+  "apex": 3.5,
+  "frames": 63
+ },
+ {
+  "name": "26_broadcast",
+  "flight": 26,
+  "percentile": 70,
+  "view": "broadcast",
+  "half": 1,
+  "apex": 1.8,
+  "frames": 46
+ },
+ {
+  "name": "26_camera01",
+  "flight": 26,
+  "percentile": 70,
+  "view": "camera01",
+  "half": 1,
+  "apex": 1.8,
+  "frames": 46
+ },
+ {
+  "name": "26_camera02",
+  "flight": 26,
+  "percentile": 70,
+  "view": "camera02",
+  "half": 1,
+  "apex": 1.8,
+  "frames": 46
+ },
+ {
+  "name": "26_camera03",
+  "flight": 26,
+  "percentile": 70,
+  "view": "camera03",
+  "half": 1,
+  "apex": 1.8,
+  "frames": 46
+ },
+ {
+  "name": "26_camera04",
+  "flight": 26,
+  "percentile": 70,
+  "view": "camera04",
+  "half": 1,
+  "apex": 1.8,
+  "frames": 46
+ },
+ {
+  "name": "26_camera05",
+  "flight": 26,
+  "percentile": 70,
+  "view": "camera05",
+  "half": 1,
+  "apex": 1.8,
+  "frames": 46
+ },
+ {
+  "name": "296_broadcast",
+  "flight": 296,
+  "percentile": 80,
+  "view": "broadcast",
+  "half": 2,
+  "apex": 1.9,
+  "frames": 53
+ },
+ {
+  "name": "296_camera01",
+  "flight": 296,
+  "percentile": 80,
+  "view": "camera01",
+  "half": 2,
+  "apex": 1.9,
+  "frames": 53
+ },
+ {
+  "name": "296_camera02",
+  "flight": 296,
+  "percentile": 80,
+  "view": "camera02",
+  "half": 2,
+  "apex": 1.9,
+  "frames": 53
+ },
+ {
+  "name": "296_camera03",
+  "flight": 296,
+  "percentile": 80,
+  "view": "camera03",
+  "half": 2,
+  "apex": 1.9,
+  "frames": 53
+ },
+ {
+  "name": "296_camera04",
+  "flight": 296,
+  "percentile": 80,
+  "view": "camera04",
+  "half": 2,
+  "apex": 1.9,
+  "frames": 53
+ },
+ {
+  "name": "296_camera05",
+  "flight": 296,
+  "percentile": 80,
+  "view": "camera05",
+  "half": 2,
+  "apex": 1.9,
+  "frames": 53
+ },
+ {
+  "name": "202_broadcast",
+  "flight": 202,
+  "percentile": 90,
+  "view": "broadcast",
+  "half": 2,
+  "apex": 2.4,
+  "frames": 54
+ },
+ {
+  "name": "202_camera01",
+  "flight": 202,
+  "percentile": 90,
+  "view": "camera01",
+  "half": 2,
+  "apex": 2.4,
+  "frames": 54
+ },
+ {
+  "name": "202_camera02",
+  "flight": 202,
+  "percentile": 90,
+  "view": "camera02",
+  "half": 2,
+  "apex": 2.4,
+  "frames": 54
+ },
+ {
+  "name": "202_camera03",
+  "flight": 202,
+  "percentile": 90,
+  "view": "camera03",
+  "half": 2,
+  "apex": 2.4,
+  "frames": 54
+ },
+ {
+  "name": "202_camera04",
+  "flight": 202,
+  "percentile": 90,
+  "view": "camera04",
+  "half": 2,
+  "apex": 2.4,
+  "frames": 54
+ },
+ {
+  "name": "202_camera05",
+  "flight": 202,
+  "percentile": 90,
+  "view": "camera05",
+  "half": 2,
+  "apex": 2.4,
+  "frames": 54
+ },
+ {
+  "name": "201_broadcast",
+  "flight": 201,
+  "percentile": 100,
+  "view": "broadcast",
+  "half": 2,
+  "apex": 2.0,
+  "frames": 35
+ },
+ {
+  "name": "201_camera01",
+  "flight": 201,
+  "percentile": 100,
+  "view": "camera01",
+  "half": 2,
+  "apex": 2.2,
+  "frames": 35
+ },
+ {
+  "name": "201_camera02",
+  "flight": 201,
+  "percentile": 100,
+  "view": "camera02",
+  "half": 2,
+  "apex": 2.2,
+  "frames": 35
+ },
+ {
+  "name": "201_camera03",
+  "flight": 201,
+  "percentile": 100,
+  "view": "camera03",
+  "half": 2,
+  "apex": 2.2,
+  "frames": 35
+ },
+ {
+  "name": "201_camera04",
+  "flight": 201,
+  "percentile": 100,
+  "view": "camera04",
+  "half": 2,
+  "apex": 2.2,
+  "frames": 35
+ },
+ {
+  "name": "201_camera05",
+  "flight": 201,
+  "percentile": 100,
+  "view": "camera05",
+  "half": 2,
+  "apex": 2.2,
+  "frames": 35
  }
 ]
