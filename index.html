@@ -180,7 +180,7 @@ footer { padding: 32px 0 56px; font: 13px/1.7 var(--sans); color: var(--muted); 
 
 <main class="wrap">
 <section id="demo">
-    <p class="note">Ten broadcast test flights, at the 10th to 100th percentile of the error of ArcPrior Base with GT inputs, each seen by the broadcast camera and static cameras 01&ndash;05. Pick the flight, the camera, the inputs (GT inputs, or video with the published or fine-tuned detection and calibration heads), how much of the flight is seen (the whole flight with its end contact, or the first 30&ndash;90&nbsp;% with the rest forecast), each contact height (correct, 0.5&nbsp;m off, or not given; the end height is not used when the end is not seen) and ArcPrior's prior. The video shows YOLO's ball boxes, the pitch lines of the camera in use, the tracked ball and each method's 3D path projected into the frame; the 3D view shows the same paths from the video camera (drag to rotate, scroll to zoom). Grad <i>et al.</i> fits only the frames it sees, so it is shown for whole flights only. All outputs are precomputed on the test folds (seed 0). Footage from the dataset of Grad <i>et al.</i>, shown for non-commercial research.</p>
+    <p class="note">Ten broadcast test flights, at the 10th to 100th percentile of the error of ArcPrior Base with GT inputs, each seen by the broadcast camera and static cameras 01&ndash;05. Pick the flight, the camera, the inputs (GT inputs, or video with the published or fine-tuned detection and calibration heads), how much of the flight is seen (the whole flight with its end contact, or the first 30&ndash;90&nbsp;% with the rest forecast), each contact height (correct, 0.5&nbsp;m off, or not given; the end height is not used when the end is not seen) and ArcPrior's prior. The video shows YOLO's ball boxes and PnLCalib's pitch lines (the published networks for GT and Real inputs, the fine-tuned heads for Real + heads ft), the tracked ball and each method's 3D path projected into the frame; the 3D view shows the same paths from the video camera (drag to rotate, scroll to zoom). Grad <i>et al.</i> fits only the frames it sees, so it is shown for whole flights only. All outputs are precomputed on the test folds (seed 0). Footage from the dataset of Grad <i>et al.</i>, shown for non-commercial research.</p>
   <div id="demo-app" data-demo="1"><p class="status">Loading the demo&hellip;</p></div>
 </section>
 </main>
@@ -190,6 +190,6 @@ footer { padding: 32px 0 56px; font: 13px/1.7 var(--sans); color: var(--muted); 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="assets/demo.js?v=3"></script>
+<script src="assets/demo.js?v=4"></script>
 </body>
 </html>
