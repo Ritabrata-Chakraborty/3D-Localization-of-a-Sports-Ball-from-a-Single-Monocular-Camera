@@ -3,8 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monocular 3D Soccer Ball Reconstruction</title>
-<meta name="description" content="Interactive demo: monocular 3D soccer ball flights from video, with detections, calibration and each method's 3D path.">
+<title>3D Ball Localization</title>
+<meta name="description" content="Project report: 3D soccer ball flights from a single broadcast camera, with an interactive demo.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3D Localization of a Sports Ball from a Single Monocular Camera">
+<meta property="og:description" content="A brief overview of a single-camera pipeline from broadcast video to physically valid 3D soccer ball flights, with an interactive demo.">
+<meta property="og:url" content="https://ritabrata-chakraborty.github.io/3D-Localization-of-a-Sports-Ball-from-a-Single-Monocular-Camera/">
+<meta property="og:image" content="https://ritabrata-chakraborty.github.io/3D-Localization-of-a-Sports-Ball-from-a-Single-Monocular-Camera/assets/fig_depth.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap">
@@ -163,6 +169,8 @@ footer { padding: 32px 0 56px; font: 13px/1.7 var(--sans); color: var(--muted); 
   .stat b { font-size: 23px; }
   .btn { padding: 9px 14px; font-size: 13px; }
 }
+tr.group td { font: 600 13px/1.4 var(--sans); color: var(--muted); background: transparent;
+  padding-top: 14px; text-align: left !important; }
 </style>
 </head>
 <body>
@@ -173,23 +181,68 @@ footer { padding: 32px 0 56px; font: 13px/1.7 var(--sans); color: var(--muted); 
 
 <header>
   <div class="wrap">
-    <div class="kicker">Interactive Demo</div>
-    <h1>Monocular 3D Soccer Ball Reconstruction</h1>
+    <div class="kicker">Project Report</div>
+    <h1>3D Localization of a Sports Ball from a Single Monocular Camera
+      <span>Physically valid soccer ball flights from broadcast video</span></h1>
+    <p class="authors"><span class="name"><a href="https://scholar.google.com/citations?user=JikCewwAAAAJ&amp;hl=en">Ritabrata Chakraborty</a></span></p>
+    <div class="buttons">
+      <a class="btn" href="#demo">Demo</a>
+      <a class="btn ghost" href="https://github.com/Ritabrata-Chakraborty/3D-Localization-of-a-Sports-Ball-from-a-Single-Monocular-Camera"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>Code</a>
+    </div>
   </div>
 </header>
 
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#overview">Overview</a><a href="#approach">Approach</a><a href="#results">Results</a><a href="#demo">Demo</a><a href="#limits">Limitations</a>
+</div></nav>
+
 <main class="wrap">
+
+<section id="overview">
+  <h2>Overview</h2>
+  <p>A single broadcast camera sees a soccer ball only as a point in the image. Every point fixes a viewing ray, but not how far along that ray the ball is, so a long, high flight far away and a short, low one close by can look the same. Sports analysis still needs the true 3D flight: does a cross clear the defenders, where does a long pass land? This project recovers physically valid 3D ball flights from ordinary match video, and also predicts the rest of a flight that is only partly seen.</p>
+  <figure class="medium">
+    <img src="assets/fig_depth.png" alt="Top: ball and camera, flight hypotheses and the 3D flight with its forecast. Bottom: scaled copies of a flight give the same viewing rays; only the true flight touches the pitch at the contact.">
+  </figure>
+</section>
+
+<section id="approach">
+  <h2>Approach</h2>
+  <ol class="findings">
+    <li><b>From video to rays.</b> Published networks detect the ball and calibrate the camera in every frame, which turns each ball detection into a viewing ray.</li>
+    <li><b>Contacts.</b> The user marks the frames where the ball is kicked or bounces. Contact heights can be given if known, but are optional.</li>
+    <li><b>Learned prior plus physics.</b> A learned model proposes likely flights from the rays, and a physics solver (gravity, drag and spin) refines them so the result is a valid ball flight.</li>
+  </ol>
+</section>
+
+<section id="results">
+  <h2>Results</h2>
+  <div class="stats">
+    <div class="stat"><b>2.65&nbsp;m</b><small>median 3D error from broadcast video (detector and calibration fine-tuned on the other half), vs 2.99&nbsp;m for physics alone</small></div>
+    <div class="stat"><b>6.7&nbsp;m</b><small>on the unseen part of partly seen flights, vs 9.2&nbsp;m for physics alone</small></div>
+    <div class="stat"><b>1.86&nbsp;m</b><small>without contact heights (ground-truth 2D inputs), vs 2.28&nbsp;m for the published optimiser of Grad <i>et al.</i></small></div>
+    <div class="stat"><b>398</b><small>airborne flights of one professional match with 3D ground truth</small></div>
+  </div>
+  <p class="note">Evaluated on the public match of Grad <i>et al.</i>, the only one we know of with both broadcast video and 3D ball ground truth, using cross-validation over the two halves.</p>
+</section>
+
 <section id="demo">
-    <p class="note">Ten broadcast test flights, at the 10th to 100th percentile of the error of ArcPrior Base with GT inputs, each seen by the broadcast camera and static cameras 01&ndash;05. Pick the flight, the camera, the inputs (GT inputs, or video with the published or fine-tuned detection and calibration heads), how much of the flight is seen (the whole flight with its end contact, or the first 30&ndash;90&nbsp;% with the rest forecast), each contact height (correct, 0.5&nbsp;m off, or not given; the end height is not used when the end is not seen) and ArcPrior's prior. The video shows YOLO's ball boxes and PnLCalib's pitch lines (the published networks for GT and Real inputs, the fine-tuned heads for Real + heads ft), the tracked ball and each method's 3D path projected into the frame; the 3D view shows the same paths from the video camera (drag to rotate, scroll to zoom). Grad <i>et al.</i> fits only the frames it sees, so it is shown for whole flights only. All outputs are precomputed on the test folds (seed 0). Footage from the dataset of Grad <i>et al.</i>, shown for non-commercial research.</p>
+  <h2>Interactive Demo</h2>
+  <p class="note">Nine test flights, each seen by the broadcast camera and five fixed cameras. Choose the flight, the camera, the inputs (ground truth or video), how much of the flight is seen and whether the contact heights are given. The video shows the detections, the pitch lines and each method's 3D path projected into the frame; the 3D view shows the same paths (drag to rotate, scroll to zoom). All outputs are precomputed. Footage from the dataset of Grad <i>et al.</i>, shown for non-commercial research.</p>
   <div id="demo-app" data-demo="1"><p class="status">Loading the demo&hellip;</p></div>
 </section>
+
+<section id="limits">
+  <h2>Limitations</h2>
+  <p>All results come from one match. Contact frames are marked by hand. Most of the remaining error comes from missed detections and imperfect camera calibration, not from the flight model. Because the method only needs viewing rays, contact frames and a flight model, it can be applied to other ball sports.</p>
+</section>
+
 </main>
 <footer class="wrap">
-  <p>Video and data: LP match from the Ball3D benchmark release (Grad <i>et al.</i>), non-commercial research use only. Ball detector: SoccerNet-v3D. Calibration: PnLCalib (Guti&eacute;rrez-P&eacute;rez and Agudo).</p>
+  <p>Video and data: the LP match released by Grad <i>et al.</i>, non-commercial research use only. Ball detector: SoccerNet-v3D. Calibration: PnLCalib (Guti&eacute;rrez-P&eacute;rez and Agudo).</p>
 </footer>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="assets/demo.js?v=4"></script>
+<script src="assets/demo.js?v=5"></script>
 </body>
 </html>

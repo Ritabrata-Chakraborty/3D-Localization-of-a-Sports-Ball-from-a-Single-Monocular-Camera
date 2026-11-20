@@ -13,7 +13,6 @@
   // ground truth has a few outlier frames.
   var MAX_STEP_M = 3;
   var BALL_RADIUS_M = 0.11;   // a size-5 ball is 22 cm across
-  var DEMO_VERSION = '4';   // bump when the clips or this file change, so browsers refetch them
   var MIN_BOX_PX = 16;        // smallest drawn YOLO box, in 960 x 540 overlay pixels
 
   // Split a path at missing frames and implausible jumps; each piece has at least two points.
@@ -40,7 +39,7 @@
       if (kind === 'json') return JSON.parse(new TextDecoder().decode(plain));
       return URL.createObjectURL(new Blob([plain], { type: 'video/mp4' }));
     }
-    var res = await fetch('assets/demo/' + name + '?v=' + DEMO_VERSION);
+    var res = await fetch('assets/demo/' + name);
     if (kind === 'json') return res.json();
     return URL.createObjectURL(await res.blob());
   }
@@ -174,7 +173,6 @@
   // Display name -> method key in the clip file ('base' / 'ft' are followed by the prior).
   var METHODS = [['LM-fitg', 'lm_fitg'], ['Grad et al.', 'grad'], ['ArcPrior Base', 'base'], ['ArcPrior ft', 'ft']];
 
-  function ordinal(q) { return q + (q === 100 ? 'th' : ['th', 'st', 'nd', 'rd'][q % 10] || 'th'); }
 
   async function start(root) {
     root.innerHTML = '';
@@ -188,10 +186,10 @@
       return s;
     }
     var selFlight = select('Flight', Object.keys(flights).sort(function (x, y) {
-      return flights[x][0].percentile - flights[y][0].percentile;
+      return Number(x) - Number(y);
     }).map(function (f) {
       var m = flights[f][0];
-      return [f, ordinal(m.percentile) + ' percentile (half ' + m.half + ', apex ' + m.apex + ' m)'];
+      return [f, 'Flight ' + f + ' (half ' + m.half + ', apex ' + m.apex + ' m)'];
     }));
     var selView = el('select', { 'aria-label': 'Camera' });
     var selSetting = select('Inputs', SETTINGS);
