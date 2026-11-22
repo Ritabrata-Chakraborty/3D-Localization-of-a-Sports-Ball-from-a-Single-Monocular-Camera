@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monocular 3D Soccer Ball Reconstruction</title>
+<title>Group 22 | Monocular 3D Soccer Ball Reconstruction</title>
 <meta name="description" content="Interactive demo: monocular 3D soccer ball flights from video, with detections, calibration and each method's 3D path.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -163,6 +163,43 @@ footer { padding: 32px 0 56px; font: 13px/1.7 var(--sans); color: var(--muted); 
   .stat b { font-size: 23px; }
   .btn { padding: 9px 14px; font-size: 13px; }
 }
+
+/* Group 22 presentation layer; reconstruction and saved data are unchanged. */
+:root { --accent: #146b66; --accent-soft: #e6f3ef; }
+:root[data-theme="dark"] { --accent: #91d7c8; --accent-soft: #203b36; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --accent: #91d7c8; --accent-soft: #203b36; }
+}
+header { background: radial-gradient(ellipse at 50% 0%, var(--accent-soft), transparent 75%); padding: 60px 0 38px; }
+.group-badge { display: inline-block; border: 1px solid var(--accent); border-radius: 999px; padding: 8px 14px; margin-bottom: 20px; font: 700 12px/1 var(--sans); letter-spacing: .12em; color: var(--accent); text-transform: uppercase; }
+.team { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; padding: 0; margin: 14px 0; list-style: none; font: 500 16px/1.5 var(--sans); }
+.hero-summary { max-width: 640px; margin: 16px auto 0; color: var(--muted); font-size: 18px; }
+.demo-intro { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 16px; }
+.demo-intro h2 { margin: 0; }
+.saved-badge { font: 600 12px/1.4 var(--sans); color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 7px 10px; }
+.walkthrough { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; list-style: none; padding: 0; margin: 20px 0 26px; counter-reset: step; }
+.walkthrough li { counter-increment: step; padding: 16px; border: 1px solid var(--rule); border-radius: 10px; background: var(--card); font: 14px/1.5 var(--sans); color: var(--muted); }
+.walkthrough li::before { content: '0' counter(step); display: block; color: var(--accent); font: 600 12px/1 var(--mono); margin-bottom: 10px; }
+.walkthrough strong { display: block; color: var(--fg); margin-bottom: 4px; }
+.demo-controls { gap: 12px 18px; }
+.demo-controls select, .demo-controls button { min-height: 40px; }
+.demo-controls input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); }
+.explainer { margin-top: 28px; border: 1px solid var(--rule); border-radius: 10px; background: var(--card); padding: 16px 20px; font: 14px/1.65 var(--sans); }
+.explainer summary { cursor: pointer; font-weight: 600; color: var(--fg); }
+.explainer dl { display: grid; grid-template-columns: 190px 1fr; gap: 12px 20px; margin-bottom: 0; }
+.explainer dt { font-weight: 600; }
+.explainer dd { margin: 0; color: var(--muted); }
+.scope-note { border-left: 3px solid var(--accent); padding: 10px 16px; margin-top: 24px; background: var(--accent-soft); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+#demo { scroll-margin-top: 20px; }
+@media (max-width: 640px) {
+  .walkthrough { grid-template-columns: 1fr; }
+  .explainer dl { grid-template-columns: 1fr; gap: 4px; }
+  .explainer dd { margin-bottom: 12px; }
+  .demo-controls select { max-width: 100%; }
+  header { padding-top: 70px; }
+}
+
 </style>
 </head>
 <body>
@@ -173,18 +210,53 @@ footer { padding: 32px 0 56px; font: 13px/1.7 var(--sans); color: var(--muted); 
 
 <header>
   <div class="wrap">
-    <div class="kicker">Interactive Demo</div>
+    <div class="group-badge">Group 22 · CIS 5810</div>
+    <div class="kicker">Computer Vision · Fall 2026</div>
     <h1>Monocular 3D Soccer Ball Reconstruction</h1>
+    <p class="hero-summary">From a single camera view to a ball flight in 3D. Explore reconstructed trajectories alongside the video and reference path.</p>
+    <ul class="team" aria-label="Project team">
+      <li>Ashwani Prasad</li>
+      <li>Ritabrata Chakraborty</li>
+      <li>Reagan Buvens</li>
+    </ul>
+    <p class="affil">University of Pennsylvania · Final Project</p>
+    <div class="buttons">
+      <a class="btn" href="#demo">Explore the demo <span aria-hidden="true">↓</span></a>
+      <a class="btn ghost" href="https://github.com/Ritabrata-Chakraborty/3D-Localization-of-a-Sports-Ball-from-a-Single-Monocular-Camera" target="_blank" rel="noopener noreferrer">View source <span aria-hidden="true">↗</span></a>
+    </div>
   </div>
 </header>
 
 <main class="wrap">
-<section id="demo">
-    <p class="note">Pick a flight and a camera. The video shows the YOLO ball candidates, PnLCalib's pitch lines and each method's 3D path projected into the frame; the 3D view below shows the same paths, starting from the video camera (drag to rotate, scroll to zoom). All model outputs are precomputed on the test folds; footage from the Ball3D benchmark release, shown for non-commercial research.</p>
-  <div id="demo-app" data-demo="1"><p class="status">Loading the demo&hellip;</p></div>
+<section id="demo" aria-labelledby="demo-heading">
+  <div class="demo-intro">
+    <h2 id="demo-heading">Explore a reconstructed flight</h2>
+    <span class="saved-badge">Precomputed results · Interactive playback</span>
+  </div>
+  <p class="note">Compare the video overlays with the same trajectories in 3D. All model outputs are precomputed on the test folds; selecting a flight loads saved results, not a new reconstruction.</p>
+  <ol class="walkthrough" aria-label="Demo walkthrough">
+    <li><strong>Choose a flight</strong>Select a flight and camera, then choose an input scenario.</li>
+    <li><strong>Compare methods</strong>Toggle the reference path and reconstruction methods. Show or hide ball boxes and pitch lines.</li>
+    <li><strong>Inspect in 3D</strong>Pause or scrub through the video. Drag to rotate the 3D view and scroll to zoom.</li>
+  </ol>
+  <div id="demo-app" data-demo="1"><p class="status" role="status">Loading the demo&hellip;</p></div>
+  <noscript><p class="note">Enable JavaScript to load the flight controls, video overlays and 3D viewer.</p></noscript>
+  <details class="explainer">
+    <summary>What am I looking at?</summary>
+    <dl>
+      <dt>Input scenarios</dt><dd>S1: benchmark inputs. S2: video-derived inputs with off-the-shelf networks. S3-sup: fine-tuned heads. Switch scenarios to inspect the saved outputs under each input configuration.</dd>
+      <dt>Reference &amp; methods</dt><dd>Ground truth is the reference trajectory. Method checkboxes select the saved reconstructed paths; matching colors connect the video overlay and 3D view.</dd>
+      <dt>Detection &amp; calibration</dt><dd>YOLO boxes show ball candidates. PnLCalib lines show the estimated pitch geometry projected into the image.</dd>
+      <dt>Paths &amp; ground tracks</dt><dd>3D paths show the airborne trajectories. Ground tracks project those paths onto the pitch plane.</dd>
+      <dt>Camera &amp; marker</dt><dd>The 3D view initially follows the video camera. Dragging stops camera following; changing the flight or camera resets it. The red ball in the 3D view marks the ground-truth position when available.</dd>
+      <dt>Reading the results</dt><dd>Numbers beside methods are saved RMSE values in meters. A single displayed flight does not replace evaluation across the full dataset. Path gaps can reflect missing points or jumps omitted by the viewer.</dd>
+    </dl>
+  </details>
+  <p class="note scope-note"><b>Demo scope.</b> This viewer presents saved reconstruction outputs. It does not upload new footage, run inference or measure processing speed. Use the project evaluation to assess accuracy across flights.</p>
 </section>
 </main>
 <footer class="wrap">
+  <p><b>Group 22 · CIS 5810 Computer Vision · University of Pennsylvania</b><br>Ashwani Prasad · Ritabrata Chakraborty · Reagan Buvens</p>
   <p>Video and data: LP match from the Ball3D benchmark release (Grad <i>et al.</i>), non-commercial research use only. Ball detector: SoccerNet-v3D. Calibration: PnLCalib (Guti&eacute;rrez-P&eacute;rez and Agudo).</p>
 </footer>
 
